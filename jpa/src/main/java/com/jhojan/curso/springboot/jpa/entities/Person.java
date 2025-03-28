@@ -20,6 +20,9 @@ public class Person {
     @Column(name = "PROGRAMMING_LANGUAGE")
     private String programmingLanguage;
 
+    @Embedded
+    private Audit audit = new Audit();
+
     public Person() {
     }
 
@@ -74,6 +77,8 @@ public class Person {
                 ", name='" + name + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", programmingLanguage='" + programmingLanguage + '\'' +
+                ", createdAt=" + audit.getCreatedAt() +
+                ", updatedAt=" + audit.getUpdatedAt() +
                 '}';
     }
 }
