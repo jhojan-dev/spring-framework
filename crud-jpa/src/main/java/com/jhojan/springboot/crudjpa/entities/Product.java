@@ -22,7 +22,7 @@ public class Product {
     private Long id;
 
     @NotEmpty(message = "{NotEmpty.product.name}")
-    @Size(min = 3, max = 20)
+    @Size(min = 3, max = 100)
     private String name;
 
     @Min(500)

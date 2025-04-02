@@ -6,6 +6,7 @@ import com.jhojan.springboot.crudjpa.services.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin(origins = "http://localhost:4200", originPatterns = "*")
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
@@ -25,12 +27,14 @@ public class ProductController {
         this.productValidation = productValidation;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<Product> getAllProducts() {
         return productService.findAll();
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/{product-id}")
     public ResponseEntity<?> getProductById(@PathVariable("product-id") Long id) {
         return productService.findById(id)
@@ -39,6 +43,7 @@ public class ProductController {
 
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<?> createProduct(@Valid @RequestBody Product product, BindingResult bindingResult) {
 //        productValidation.validate(product, bindingResult);
@@ -48,6 +53,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.create(product));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{product-id}")
     public ResponseEntity<?> updateProduct(
             @PathVariable("product-id") Long id, @Valid @RequestBody Product product, BindingResult bindingResult
@@ -62,6 +68,7 @@ public class ProductController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{product-id}")
     public ResponseEntity<?> deleteProduct(@PathVariable("product-id") Long id) {
         return productService.delete( new Product().setId(id))
